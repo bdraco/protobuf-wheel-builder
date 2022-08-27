@@ -9,8 +9,6 @@ from setuptools import build_meta as _orig
 
 prepare_metadata_for_build_wheel = _orig.prepare_metadata_for_build_wheel
 build_sdist = _orig.build_sdist
-get_requires_for_build_wheel = _orig.get_requires_for_build_wheel
-get_requires_for_build_sdist = _orig.get_requires_for_build_sdist
 
 
 def build_wheel(  # type: ignore[no-untyped-def]
@@ -34,6 +32,14 @@ def build_wheel(  # type: ignore[no-untyped-def]
         result_path = os.path.join(wheel_directory, result_basename)
         os.rename(wheel_file, result_path)
         return result_basename
+
+
+def get_requires_for_build_wheel(self, config_settings=None):  # type: ignore[no-untyped-def]
+    return _orig.get_requires_for_build_wheel(config_settings)
+
+
+def get_requires_for_build_sdist(self, config_settings=None):  # type: ignore[no-untyped-def]
+    return _orig.get_requires_for_build_sdist(config_settings)
 
 
 def run_command(
