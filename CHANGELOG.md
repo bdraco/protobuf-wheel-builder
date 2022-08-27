@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.3 (2022-08-27)
+### Fix
+* Compile ([`c173155`](https://github.com/bdraco/protobuf-wheel-builder/commit/c1731553e2a92353046a09df78c01580a04e85e5))
+
 ## v1.1.0 (2022-08-27)
 ### Feature
 * Make it work on macos ([#2](https://github.com/bdraco/protobuf-wheel-builder/issues/2)) ([`09976bf`](https://github.com/bdraco/protobuf-wheel-builder/commit/09976bfb369fa79da32bfdf63b8465894a9d319d))
