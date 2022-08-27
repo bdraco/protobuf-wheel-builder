@@ -1,5 +1,6 @@
 import glob
 import os
+import re
 import subprocess  # nosec
 import sys
 import tempfile
@@ -34,18 +35,30 @@ def build_wheel(  # type: ignore[no-untyped-def]
         run_command(f"cd {tmp_dist_dir}/protobuf && ./autogen.sh")
         run_command(f"cd {tmp_dist_dir}/protobuf && ./configure")
         run_command(f"cd {tmp_dist_dir}/protobuf && make -j{cpu_count}")
+        with open(f"{tmp_dist_dir}/protobuf/python/setup.py", "r+") as f:
+            text = f.read()
+            text = re.sub("name='protobuf'", "name='protobuf-wheel-builder'", text)
+            f.seek(0)
+            f.write(text)
+            f.close()
+
         run_command(
-            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py build --cpp_implementation"
+            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py build --cpp_implementation --compile_static_extension"
         )
         run_command(
-            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py bdist_wheel --cpp_implementation"
+            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py bdist_wheel --cpp_implementation --compile_static_extension"
         )
         wheel_file = glob.glob(f"{tmp_dist_dir}/protobuf/python/dist/*.whl")[0]
         result_basename = os.path.basename(wheel_file)
+        mutated_result_basename = result_basename.replace(
+            "protobuf-", "protobuf-wheel-builder-"
+        )
         target_dir = wheel_directory
-        result_path = os.path.join(target_dir, result_basename)
+        result_path = os.path.join(target_dir, mutated_result_basename)
         os.rename(wheel_file, result_path)
-    return result_basename
+        print(f"Moved into file: {result_path}")
+    print(f"Finished building wheel: {mutated_result_basename}")
+    return mutated_result_basename
 
 
 def run_command(
