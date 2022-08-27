@@ -40,6 +40,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/bdraco/protobuf-wheel-builder",
-    version="1.2.1",
+    version="1.2.2",
     zip_safe=False,
 )
