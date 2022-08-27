@@ -40,8 +40,7 @@ def build_wheel(  # type: ignore[no-untyped-def]
         run_command(
             f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py bdist_wheel --cpp_implementation"
         )
-        wheels = glob.glob(f"{tmp_dist_dir}/protobuf/python/dist/*.whl")[0]
-        wheel_file = wheels[0]
+        wheel_file = glob.glob(f"{tmp_dist_dir}/protobuf/python/dist/*.whl")[0]
         result_basename = os.path.basename(wheel_file)
         target_dir = wheel_directory
         result_path = os.path.join(target_dir, result_basename)
