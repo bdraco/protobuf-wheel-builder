@@ -35,7 +35,7 @@ def build_wheel(  # type: ignore[no-untyped-def]
     with tempfile.TemporaryDirectory(
         dir=wheel_directory
     ) as tmp_build_dir, tempfile.TemporaryDirectory(
-        dir=wheel_directory
+        dir=os.path.expanduser("~")
     ) as tmp_dist_dir:
         run_command(
             f"git clone --depth 1 --branch v{version} https://github.com/protocolbuffers/protobuf {tmp_dist_dir}/protobuf"
