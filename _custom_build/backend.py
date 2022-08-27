@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import shutil
 import subprocess  # nosec
 import sys
 import tempfile
@@ -63,7 +64,7 @@ def build_wheel(  # type: ignore[no-untyped-def]
         )
         target_dir = wheel_directory
         result_path = os.path.join(target_dir, mutated_result_basename)
-        os.rename(wheel_file, result_path)
+        shutil.copy(wheel_file, result_path)
         print(f"*** Moved into file: {result_path}")
     print(f"*** Finished building wheel: {mutated_result_basename}")
     return mutated_result_basename
