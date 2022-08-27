@@ -40,7 +40,9 @@ def build_wheel(  # type: ignore[no-untyped-def]
         )
         run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./autogen.sh")
         run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./configure")
-        run_command(f"cd {tmp_dist_dir}/protobuf && make -j{cpu_count}")
+        run_command(
+            f"cd {tmp_dist_dir}/protobuf && CFLAGS=-fPIC CPPFLAGS=-fPIC LDFLAGS=-fPIC make -j{cpu_count}"
+        )
         with open(f"{tmp_dist_dir}/protobuf/python/setup.py", "r+") as f:
             text = f.read()
             text = re.sub("name='protobuf'", "name='protobuf-wheel-builder'", text)
