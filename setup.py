@@ -1,9 +1,45 @@
 #!/usr/bin/env python
 
-# This is a shim to allow GitHub to detect the package, build is done with poetry
-# Taken from https://github.com/Textualize/rich
+"""The setup script."""
 
-import setuptools
+from setuptools import find_packages, setup
 
-if __name__ == "__main__":
-    setuptools.setup(name="protobuf-wheel-builder")
+requirements = ["protobuf>=3.12.2,<4.0"]
+
+setup_requirements = [
+    "pytest-runner",
+]
+
+test_requirements = [
+    "pytest>=3",
+]
+
+setup(
+    author="J. Nick Koston",
+    author_email="nick@koston.org",
+    python_requires=">=3.8",
+    classifiers=[
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ],
+    description="Python library for building protobuf wheels",
+    install_requires=requirements,
+    license="Apache Software License 2.0",
+    include_package_data=True,
+    keywords="protobuf",
+    name="protobuf",
+    build_requires=["requests"],
+    packages=find_packages(include=["protobuf", "protobuf.*"]),
+    setup_requires=setup_requirements,
+    test_suite="tests",
+    tests_require=test_requirements,
+    url="https://github.com/bdraco/protobuf-wheel-builder",
+    version="3.20.1",
+    zip_safe=False,
+)
