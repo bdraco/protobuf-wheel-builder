@@ -36,8 +36,8 @@ def build_wheel(  # type: ignore[no-untyped-def]
         run_command(
             f"git clone --depth 1 --branch v{version} https://github.com/protocolbuffers/protobuf {tmp_dist_dir}/protobuf"
         )
-        run_command(f"cd {tmp_dist_dir}/protobuf && ./autogen.sh")
-        run_command(f"cd {tmp_dist_dir}/protobuf && ./configure")
+        run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./autogen.sh")
+        run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./configure")
         run_command(f"cd {tmp_dist_dir}/protobuf && make -j{cpu_count}")
         with open(f"{tmp_dist_dir}/protobuf/python/setup.py", "r+") as f:
             text = f.read()
