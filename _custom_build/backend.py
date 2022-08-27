@@ -11,8 +11,6 @@ from setuptools import build_meta as _orig
 prepare_metadata_for_build_wheel = _orig.prepare_metadata_for_build_wheel
 build_sdist = _orig.build_sdist
 
-VERSION = "3.20.1"
-
 
 def get_requires_for_build_wheel(self, config_settings=None):  # type: ignore[no-untyped-def]
     return _orig.get_requires_for_build_wheel(config_settings)
@@ -27,10 +25,16 @@ def build_wheel(  # type: ignore[no-untyped-def]
 ):
     python_bin = sys.executable
     cpu_count = os.cpu_count() or 4
+    version = os.environ.get("PROTOBUF_VERSION")
+    if not version:
+        import google.protobuf  # type: ignore[import]
+
+        version = google.protobuf.__version__
+    print(f"*** Building protobuf wheel for {version}")
     wheel_directory = os.path.abspath(wheel_directory)
     with tempfile.TemporaryDirectory(dir=wheel_directory) as tmp_dist_dir:
         run_command(
-            f"git clone --depth 1 --branch v{VERSION} https://github.com/protocolbuffers/protobuf {tmp_dist_dir}/protobuf"
+            f"git clone --depth 1 --branch v{version} https://github.com/protocolbuffers/protobuf {tmp_dist_dir}/protobuf"
         )
         run_command(f"cd {tmp_dist_dir}/protobuf && ./autogen.sh")
         run_command(f"cd {tmp_dist_dir}/protobuf && ./configure")
@@ -56,8 +60,8 @@ def build_wheel(  # type: ignore[no-untyped-def]
         target_dir = wheel_directory
         result_path = os.path.join(target_dir, mutated_result_basename)
         os.rename(wheel_file, result_path)
-        print(f"Moved into file: {result_path}")
-    print(f"Finished building wheel: {mutated_result_basename}")
+        print(f"*** Moved into file: {result_path}")
+    print(f"*** Finished building wheel: {mutated_result_basename}")
     return mutated_result_basename
 
 
