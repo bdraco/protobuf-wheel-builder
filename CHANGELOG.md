@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.4 (2022-08-27)
+### Fix
+* Compile ([`6d4bb5b`](https://github.com/bdraco/protobuf-wheel-builder/commit/6d4bb5b902c39d2f7db43f0f932aa8117ee1b540))
+
 ## v1.2.3 (2022-08-27)
 ### Fix
 * Compile ([`c173155`](https://github.com/bdraco/protobuf-wheel-builder/commit/c1731553e2a92353046a09df78c01580a04e85e5))
