@@ -33,22 +33,14 @@ def build_wheel(  # type: ignore[no-untyped-def]
     print(f"*** Building protobuf wheel for {version}")
     wheel_directory = os.path.abspath(wheel_directory)
     with tempfile.TemporaryDirectory(
-        dir=wheel_directory
-    ) as tmp_build_dir, tempfile.TemporaryDirectory(
-        dir=os.path.expanduser("~")
+        dir=os.path.expanduser("~")  # /tmp may be nonexecutable
     ) as tmp_dist_dir:
         run_command(
             f"git clone --depth 1 --branch v{version} https://github.com/protocolbuffers/protobuf {tmp_dist_dir}/protobuf"
         )
-        run_command(
-            f"cd {tmp_dist_dir}/protobuf && TMPDIR={tmp_build_dir} /bin/sh ./autogen.sh"
-        )
-        run_command(
-            f"cd {tmp_dist_dir}/protobuf && TMPDIR={tmp_build_dir} /bin/sh ./configure"
-        )
-        run_command(
-            f"cd {tmp_dist_dir}/protobuf && TMPDIR={tmp_build_dir} make -j{cpu_count}"
-        )
+        run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./autogen.sh")
+        run_command(f"cd {tmp_dist_dir}/protobuf && /bin/sh ./configure")
+        run_command(f"cd {tmp_dist_dir}/protobuf && make -j{cpu_count}")
         with open(f"{tmp_dist_dir}/protobuf/python/setup.py", "r+") as f:
             text = f.read()
             text = re.sub("name='protobuf'", "name='protobuf-wheel-builder'", text)
@@ -57,10 +49,10 @@ def build_wheel(  # type: ignore[no-untyped-def]
             f.close()
 
         run_command(
-            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs TMPDIR={tmp_build_dir} {python_bin} setup.py build --cpp_implementation --compile_static_extension"
+            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py build --cpp_implementation --compile_static_extension"
         )
         run_command(
-            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs TMPDIR={tmp_build_dir} {python_bin} setup.py bdist_wheel --cpp_implementation --compile_static_extension"
+            f"cd {tmp_dist_dir}/protobuf/python && MAKEFLAGS=-j{cpu_count} LD_LIBRARY_PATH=../src/.libs {python_bin} setup.py bdist_wheel --cpp_implementation --compile_static_extension"
         )
         wheel_file = glob.glob(f"{tmp_dist_dir}/protobuf/python/dist/*.whl")[0]
         result_basename = os.path.basename(wheel_file)
